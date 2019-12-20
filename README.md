@@ -1,7 +1,7 @@
 # ws
 
-ws assignment
+$ git clone https://github.com/maxeema/ws
 
-## Getting Started
+$ cd ws
 
 $ flutter run
