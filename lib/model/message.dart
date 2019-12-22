@@ -2,14 +2,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:ws/dto/message_dto.dart';
 
-enum Owner {
-  Me, System, Other
-}
+import 'owner.dart';
 
 class Message {
-  final String date,
-               text,
-               user;
+  final String date, text, user;
   final Owner owner;
 
   Message({this.date, @required this.text, this.user, @required this.owner})
@@ -17,17 +13,13 @@ class Message {
 
   @override
   int get hashCode => text.hashCode;
+
   @override
   bool operator ==(other) => other is Message && other.text == text &&
           other.date == date && other.user == user && other.owner == owner;
+
   @override
   String toString() => text;
-}
-
-extension OwnerExt on Owner {
-  bool get me => this == Owner.Me;
-  bool get system => this == Owner.System;
-  bool get other => this == Owner.Other;
 }
 
 extension MessageExt on Message {

@@ -8,6 +8,7 @@ import 'package:ws/misc/ext.dart';
 import 'package:ws/misc/insets.dart';
 import 'package:ws/misc/util.dart' as util;
 import 'package:ws/model/message.dart';
+import 'package:ws/model/owner.dart';
 import 'package:ws/model/user.dart';
 
 import 'widgets/chat_input_widget.dart';
