@@ -1,6 +1,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:ws/dto/message_dto.dart';
+import 'package:ws/misc/util.dart';
 
 import 'owner.dart';
 
@@ -24,7 +25,7 @@ class Message {
 
 extension MessageExt on Message {
 
-  bool get hasDate => date != null && date.trim().isNotEmpty;
+  bool get hasDate => isNotEmpty(date);
   bool get isMine => owner.me;
 
   static Message of(MessageDto dto, Owner owner) => Message(
