@@ -1,12 +1,8 @@
-import 'dart:async';
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:web_socket_channel/status.dart' as status;
-import 'package:ws/conf.dart' as conf;
 import 'package:ws/dto/message_dto.dart';
 import 'package:ws/misc/ext.dart';
 import 'package:ws/misc/insets.dart';
@@ -17,44 +13,27 @@ import 'package:ws/model/user.dart';
 import 'widgets/chat_input_widget.dart';
 import 'widgets/chat_message_widget.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
+
+  ChatScreen({
+    Key key,
+    @required this.user,
+    @required this.channel
+  }) : assert(user != null), super(key: key);
 
   final User user;
-
-  ChatScreen(this.user);
-
-  @override
-  _ChatScreenState createState() => _ChatScreenState();
-
-}
-
-class _ChatScreenState extends State<ChatScreen> {
+  final IOWebSocketChannel channel;
 
   final _messages = <Message>[];
   final _listKey = GlobalKey<AnimatedListState>();
   final _scrollController = ScrollController();
-
-  IOWebSocketChannel _channel;
-
-  @override
-  void initState() {
-    super.initState();
-    if (_channel == null)
-      _channel = IOWebSocketChannel.connect('ws://${conf.api_url}/ws?name=${user.name}');
-  }
-
-  @override
-  void dispose() {
-    _channel?.sink?.close(status.goingAway);
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor,
       body: StreamBuilder(
-        stream: _channel.stream,
+        stream: channel.stream,
         builder: onStreamBuildWidget,
       ),
     );
@@ -62,7 +41,7 @@ class _ChatScreenState extends State<ChatScreen> {
 
   bool _sendMessage(String msg) {
     final json = jsonEncode({"text": msg});
-    _channel.sink.add(json);
+    channel.sink.add(json);
     print('send: $json');
     return true;
   }
@@ -73,10 +52,12 @@ class _ChatScreenState extends State<ChatScreen> {
     //
     if (snapshot.hasData) {
       final msg = getMessage(snapshot.data);
-      _messages.add(msg);
-      Future(insertMessage);
-      if (msg.isMine)
-        Future.delayed(50.ms, scrollToLastMessage);
+      if (_messages.isEmpty || _messages.last != msg) {
+        _messages.add(msg);
+        Future(insertMessage);
+        if (msg.isMine)
+          Future.delayed(50.ms, scrollToLastMessage);
+      }
       return Column(
         children: [
           Expanded(
@@ -94,7 +75,7 @@ class _ChatScreenState extends State<ChatScreen> {
           ),
           Material(
             elevation: 2,
-            child: ChatInput(onOkay: _sendMessage),
+            child: ChatInput(onDone: _sendMessage),
           )
         ],
       );
@@ -126,8 +107,6 @@ class _ChatScreenState extends State<ChatScreen> {
       _scrollController.animateTo(_scrollController.position.maxScrollExtent,
           duration: 300.ms, curve: Curves.easeOut);
   }
-
-  User get user => widget.user;
 
   Message getMessage(dynamic json) {
     final dto = MessageDto.fromJson(jsonDecode(json));

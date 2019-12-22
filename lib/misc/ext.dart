@@ -21,8 +21,14 @@ extension ListExt on List {
 
 }
 
+extension BuildContextExt on BuildContext {
+
+  AppLocalizations get l => AppLocalizations.of(this);
+
+}
+
 extension StateExt<T extends StatefulWidget> on State<T> {
 
-  AppLocalizations get l => AppLocalizations.of(context);
+  AppLocalizations get l => context.l;
 
 }

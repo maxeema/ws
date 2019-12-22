@@ -8,9 +8,12 @@ typedef OnTextOkCallback = bool Function(String text);
 
 class ChatInput extends StatefulWidget {
 
-  final OnTextOkCallback onOkay;
+  ChatInput({
+    Key key,
+    @required this.onDone
+  }) : assert (onDone != null), super(key: key);
 
-  ChatInput({@required this.onOkay}) : assert (onOkay != null);
+  final OnTextOkCallback onDone;
 
   @override
   _ChatInputState createState() => _ChatInputState();
@@ -21,20 +24,7 @@ class _ChatInputState extends State<ChatInput> {
 
   final _textController = TextEditingController();
 
-  FocusNode _focusNode;
   String _text;
-
-  @override
-  void initState() {
-    super.initState();
-    _focusNode = FocusNode();
-  }
-
-  @override
-  dispose() {
-    _focusNode.dispose();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +34,6 @@ class _ChatInputState extends State<ChatInput> {
           flex: 9,
           child: TextField(
             controller: _textController,
-            focusNode: _focusNode,
             scrollPadding: 16.insets.all,
             showCursor: true,
 //            autofocus: true,
@@ -55,7 +44,7 @@ class _ChatInputState extends State<ChatInput> {
               border: InputBorder.none,
               hintText: l.messageHint,
             ),
-            onSubmitted: (text) => onDone(),
+            onSubmitted: (text) => _onDone(),
             onChanged: (newText) {
               setState(() {
                 _text = newText?.trim();
@@ -67,15 +56,15 @@ class _ChatInputState extends State<ChatInput> {
           color: Theme.of(context).primaryColor,
           disabledColor: Theme.of(context).primaryColorDark,
           icon: Icon(Icons.send),
-          onPressed: util.isNotEmpty(_text)? onDone : null,
+          onPressed: util.isNotEmpty(_text)? _onDone : null,
           tooltip: l.send,
         )
       ],
     );
   }
 
-  onDone() {
-    final consumed = widget.onOkay(_text.trim());
+  _onDone() {
+    final consumed = widget.onDone(_text.trim());
     if (consumed) {
       _textController.clear();
       setState(() {

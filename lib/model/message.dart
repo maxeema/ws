@@ -14,6 +14,14 @@ class Message {
 
   Message({this.date, @required this.text, this.user, @required this.owner})
       : assert(text != null), assert(owner != null);
+
+  @override
+  int get hashCode => text.hashCode;
+  @override
+  bool operator ==(other) => other is Message && other.text == text &&
+          other.date == date && other.user == user && other.owner == owner;
+  @override
+  String toString() => text;
 }
 
 extension OwnerExt on Owner {
