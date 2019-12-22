@@ -1,0 +1,37 @@
+
+import 'package:flutter/cupertino.dart';
+import 'package:ws/dto/message_dto.dart';
+
+enum Owner {
+  Me, System, Other
+}
+
+class Message {
+  final String date,
+               text,
+               user;
+  final Owner owner;
+
+  Message({this.date, @required this.text, this.user, @required this.owner})
+      : assert(text != null), assert(owner != null);
+}
+
+extension OwnerExt on Owner {
+  bool get me => this == Owner.Me;
+  bool get system => this == Owner.System;
+  bool get other => this == Owner.Other;
+}
+
+extension MessageExt on Message {
+
+  bool get hasDate => date != null && date.trim().isNotEmpty;
+  bool get isMine => owner.me;
+
+  static Message of(MessageDto dto, Owner owner) => Message(
+      date: dto.date,
+      text: dto.text,
+      user: dto.user,
+      owner: owner
+  );
+  
+}

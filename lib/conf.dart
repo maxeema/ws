@@ -1,6 +1,8 @@
+import 'package:flutter/material.dart';
 
-class Conf {
+///
 
-  static final host = 'pm.tada.team/ws';
-
-}
+const api_url = 'pm.tada.team';
+const appColor = Colors.deepOrange;
+const appAccentColor = Colors.blue;
+const appGitHubPage = 'https://github.com/maxeema/ws';
