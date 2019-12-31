@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:ws/misc/ext.dart';
 import 'package:ws/misc/insets.dart';
-import 'package:ws/model/message.dart';
-import 'package:ws/model/owner.dart';
+import 'package:ws/domain/message.dart';
+import 'package:ws/domain/owner.dart';
 
 class MessageItem extends StatelessWidget {
 

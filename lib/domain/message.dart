@@ -28,11 +28,12 @@ extension MessageExt on Message {
   bool get hasDate => isNotEmpty(date);
   bool get isMine => owner.me;
 
-  static Message of(MessageDto dto, Owner owner) => Message(
+  static Message of(MessageDto dto, String user) => Message(
       date: dto.date,
       text: dto.text,
       user: dto.user,
-      owner: owner
+      owner: dto.user == user ? Owner.Me
+            : (isEmpty(dto.user) ? Owner.System : Owner.Other)
   );
-  
+
 }
